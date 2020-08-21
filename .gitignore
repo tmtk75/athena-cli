@@ -1,0 +1,9 @@
+.*.swp
+*.json.gz
+.terraform
+*.tfstate.backup
+athena-cli
+.athena-cli.yaml
+sample.sh
+local.auto.tfvars
+/build
