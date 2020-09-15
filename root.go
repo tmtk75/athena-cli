@@ -48,6 +48,9 @@ func init() {
 	// List
 	RootCmd.AddCommand(ListCmd)
 
+	// List databases
+	RootCmd.AddCommand(ListDatabasesCmd)
+
 	// Version
 	RootCmd.AddCommand(VersionCmd)
 }

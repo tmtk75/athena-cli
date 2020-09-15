@@ -1,9 +1,11 @@
 .*.swp
 *.json.gz
 .terraform
+*.tfstate
 *.tfstate.backup
 athena-cli
 .athena-cli.yaml
 sample.sh
 local.auto.tfvars
 /build
+.DS_Store
