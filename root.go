@@ -59,6 +59,12 @@ func init() {
 	// Show catalogs
 	RootCmd.AddCommand(ShowTablesCmd)
 
+	// List work groups
+	RootCmd.AddCommand(ListWorkGroupsCmd)
+
+	// Get work groups
+	RootCmd.AddCommand(GetWorkGroupCmd)
+
 	// Version
 	RootCmd.AddCommand(VersionCmd)
 }
