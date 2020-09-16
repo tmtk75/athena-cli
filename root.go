@@ -16,6 +16,7 @@ func init() {
 	f.String(keyWorkGroup, "primary", "Athena work group")
 	f.String(keyOutputLocation, "", "S3 URL for output, for instance, s3://your-bucket-name/path/to")
 	f.String(keyDatabaseName, "", "Athena database name")
+	f.String(keyCatalogName, "AwsDataCatalog", "data catalog name")
 	f.Bool(keyVerbose, false, "Work verbosely")
 	f.Duration(keyTimeout, time.Second*5, "Timeout ex) 30s")
 	f.Bool(keyDryRun, false, "Dry-run only printing templated query.")
@@ -27,6 +28,7 @@ func init() {
 		{key: keyWorkGroup, env: "WORK_GROUP"},
 		{key: keyOutputLocation, env: "OUTPUT_LOCATION"},
 		{key: keyDatabaseName, env: "DATABASE_NAME"},
+		{key: keyCatalogName, env: "CATALOG_NAME"},
 		{key: keyVerbose, env: "VERBOSE"},
 		{key: keyTimeout, env: "TIMEOUT"},
 		{key: keyDryRun},
@@ -51,6 +53,9 @@ func init() {
 	// List databases
 	RootCmd.AddCommand(ListDatabasesCmd)
 
+	// List catalogs
+	RootCmd.AddCommand(ListCatalogsCmd)
+
 	// Version
 	RootCmd.AddCommand(VersionCmd)
 }
@@ -73,4 +78,5 @@ const (
 	keyDatabaseName   = "database-name"
 	keyTimeout        = "timeout"
 	keyDryRun         = "dry-run"
+	keyCatalogName    = "catalog-name"
 )

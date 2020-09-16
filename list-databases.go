@@ -11,12 +11,22 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	keyListDatabasesJson = "list-databases.json"
+)
+
+func init() {
+	f := ListDatabasesCmd.PersistentFlags()
+	f.Bool("json", false, "JSON")
+	viper.BindPFlag(keyListDatabasesJson, f.Lookup("json"))
+}
+
 var ListDatabasesCmd = &cobra.Command{
 	Use:   "list-databases",
 	Short: "List all databases",
 	Run: func(cmd *cobra.Command, args []string) {
 		w := NewWorld()
-		err := w.List()
+		err := w.ListDatabases()
 		if err != nil {
 			log.Fatalf("%v", err)
 		}
@@ -24,38 +34,28 @@ var ListDatabasesCmd = &cobra.Command{
 }
 
 func (world *World) ListDatabases() error {
-	var (
-		wg = viper.GetString(keyWorkGroup)
-	)
-
-	r, err := world.athenaClient.ListQueryExecutionsRequest(&athena.ListQueryExecutionsInput{WorkGroup: aws.String(wg)}).Send(world.ctx)
+	name := viper.GetString(keyCatalogName)
+	r, err := world.athenaClient.ListDatabasesRequest(&athena.ListDatabasesInput{
+		CatalogName: aws.String(name),
+	}).Send(world.ctx)
 	if err != nil {
 		return err
 	}
 
-	all := make([]*athena.QueryExecution, 0)
-	count := 0
-	for _, e := range r.QueryExecutionIds {
-		if count >= viper.GetInt(keyListLimit) {
-			break
-		}
-		r, err := world.athenaClient.GetQueryExecutionRequest(&athena.GetQueryExecutionInput{QueryExecutionId: aws.String(e)}).Send(world.ctx)
+	if viper.GetBool(keyListDatabasesJson) {
+		b, err := json.MarshalIndent(r, "", "  ")
 		if err != nil {
-			log.Printf("%v", err)
+			return err
 		}
-		all = append(all, r.QueryExecution)
-		count++
+		fmt.Printf("%v\n", string(b))
+	} else {
+		for _, e := range r.DatabaseList {
+			if e.Description == nil {
+				fmt.Printf("%v\n", *e.Name)
+			} else {
+				fmt.Printf("%v\t%v\n", *e.Name, *e.Description)
+			}
+		}
 	}
-
-	//sort.SliceStable(all, func(i, j int) bool {
-	//	//return all[i].ResultConfiguration.
-	//})
-
-	b, err := json.Marshal(all)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("%v\n", string(b))
 	return nil
 }
