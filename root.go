@@ -56,6 +56,9 @@ func init() {
 	// List catalogs
 	RootCmd.AddCommand(ListCatalogsCmd)
 
+	// Show catalogs
+	RootCmd.AddCommand(ShowTablesCmd)
+
 	// Version
 	RootCmd.AddCommand(VersionCmd)
 }
