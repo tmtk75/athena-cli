@@ -34,6 +34,10 @@ func init() {
 	for _, e := range opts {
 		viper.BindPFlag(e.key, f.Lookup(e.key))
 	}
+
+	// local options
+	f.Bool("force", false, "force to query in case of no quota.")
+	viper.BindPFlag(keyQueryForce, f.Lookup("force"))
 }
 
 const (
@@ -41,6 +45,7 @@ const (
 	keyQueryWaitDuration = "query.wait-duration"
 	keyQueryResultCsv    = "query.result-csv"
 	keyQueryValues       = "query.values"
+	keyQueryForce        = "query.force"
 )
 
 var QueryCmd = &cobra.Command{
@@ -105,6 +110,14 @@ func (world *World) Query(query string) error {
 		loc    = viper.GetString(keyOutputLocation)
 		dbname = viper.GetString(keyDatabaseName)
 	)
+
+	// A guard, check if work-group has quota to scan.
+	if err := world.WorkGroupHasBytesScannedCutoffPerQuery(wg); err != nil {
+		if !viper.GetBool(keyQueryForce) {
+			return err
+		}
+	}
+
 	r, err := world.ExecuteQuery(wg, dbname, loc, query)
 	if err != nil {
 		return err

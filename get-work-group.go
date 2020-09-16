@@ -37,3 +37,19 @@ func (world *World) GetWorkGroup(name string) error {
 	fmt.Printf("%v\n", string(b))
 	return nil
 }
+
+func (world *World) WorkGroupHasBytesScannedCutoffPerQuery(wg string) error {
+	r, err := world.athenaClient.GetWorkGroupRequest(&athena.GetWorkGroupInput{
+		WorkGroup: aws.String(wg),
+	}).Send(world.ctx)
+	if err != nil {
+		return err
+	}
+	//if r.WorkGroup == nil {
+	//	return fmt.Errorf("workGroup is nil")
+	//}
+	if r.WorkGroup.Configuration.BytesScannedCutoffPerQuery == nil {
+		return fmt.Errorf("bytes-scanned-cutoff-per-query is empty for the given work-group, '%v'", wg)
+	}
+	return nil
+}
