@@ -1,6 +1,8 @@
 name: Release
 on:
   push:
+    branches:
+      - '**'
     tags:
       - v[0-9]*
 
@@ -22,6 +24,17 @@ jobs:
 
     - name: Test code
       run: go test -v .
+
+    - name: Slack notification
+      if: success()
+      uses: rtCamp/action-slack-notify@v2.0.2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_USERNAME: athena-cli
+        SLACK_TITLE: test success
+        SLACK_COLOR: good
+        SLACK_CHANNEL: api-test
+
 
   setup-release:
     name: Setup release
