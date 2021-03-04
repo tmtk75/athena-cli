@@ -31,7 +31,7 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_USERNAME: athena-cli
-        SLACK_ICON_EMOJI: :tada:
+        SLACK_ICON_EMOJI: ':tada:'
         SLACK_TITLE: test success
         SLACK_COLOR: good
         SLACK_CHANNEL: api-test
