@@ -1,6 +1,6 @@
 module github.com/tmtk75/athena-cli
 
-go 1.15
+go 1.16
 
 require (
 	github.com/aws/aws-sdk-go-v2 v0.24.0
