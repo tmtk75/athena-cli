@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/athena"
@@ -14,10 +15,14 @@ import (
 func init() {
 	f := ListCmd.PersistentFlags()
 
-	f.Int(keyListLimit, 5, "")
+	f.Int(keyListLimit, 5, "number of limitation to list exeuctions")
+	f.Bool(keyJson, false, "print in raw JSON")
+	f.Bool(keyHeader, false, "print header in .tsv")
 
 	opts := []struct{ key string }{
 		{key: keyListLimit},
+		{key: keyJson},
+		{key: keyHeader},
 	}
 	for _, e := range opts {
 		viper.BindPFlag(e.key, f.Lookup(e.key))
@@ -26,6 +31,8 @@ func init() {
 
 const (
 	keyListLimit = "list.limit"
+	keyJson      = "list.json"
+	keyHeader    = "list.headser"
 )
 
 var ListCmd = &cobra.Command{
@@ -64,15 +71,18 @@ func (world *World) List() error {
 		count++
 	}
 
-	//sort.SliceStable(all, func(i, j int) bool {
-	//	//return all[i].ResultConfiguration.
-	//})
-
-	b, err := json.Marshal(all)
-	if err != nil {
-		return err
+	if viper.GetBool(keyJson) {
+		b, err := json.MarshalIndent(all, "", "  ")
+		if err != nil {
+			return err
+		}
+		fmt.Printf("%v\n", string(b))
+	} else {
+		for _, e := range all {
+			fmt.Printf("%v\n", strings.Join([]string{"QueryExecutionId", "SubmissionDateTime", "State", "WorkGroup", "StatementType", "Query"}, "\t"))
+			start := *e.Status.SubmissionDateTime
+			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%q\n", *e.QueryExecutionId, start, e.Status.State, *e.WorkGroup, e.StatementType, *e.Query)
+		}
 	}
-
-	fmt.Printf("%v\n", string(b))
 	return nil
 }
