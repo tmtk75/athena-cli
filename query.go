@@ -78,10 +78,11 @@ var QueryCmd = &cobra.Command{
 			return
 		}
 
-		err = w.Query(q)
+		s, err := w.Query(q)
 		if err != nil {
 			log.Fatalf("%v", err)
 		}
+		fmt.Printf("%v\n", s)
 	},
 }
 
@@ -104,7 +105,7 @@ func templ(q string) (string, error) {
 	return b.String(), nil
 }
 
-func (world *World) Query(query string) error {
+func (world *World) Query(query string) (string, error) {
 	var (
 		wg     = viper.GetString(keyWorkGroup)
 		loc    = viper.GetString(keyOutputLocation)
@@ -114,22 +115,22 @@ func (world *World) Query(query string) error {
 	// A guard, check if work-group has quota to scan.
 	if err := world.WorkGroupHasBytesScannedCutoffPerQuery(wg); err != nil {
 		if !viper.GetBool(keyQueryForce) {
-			return err
+			return "", err
 		}
 	}
 
 	r, err := world.ExecuteQuery(wg, dbname, loc, query)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if viper.GetBool(keyQuerySuppressWait) {
 		fmt.Printf("%v\n", *r.QueryExecutionId)
-		return nil
+		return "", nil
 	}
 
 	if err := world.WaitExecution(r.QueryExecutionId); err != nil {
-		return err
+		return "", err
 	}
 
 	logger.Printf("query-execution-id: %v", *r.QueryExecutionId)
@@ -141,16 +142,15 @@ func (world *World) Query(query string) error {
 		s, err = world.GetResult(*r.QueryExecutionId)
 		if e, ok := err.(NoRows); ok {
 			logger.Printf("%v\n", e)
-			return nil
+			return s, nil
 		}
 
 	}
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	fmt.Printf("%v\n", s)
-	return nil
+	return s, nil
 }
 
 func (world *World) ExecuteQuery(wg, dbname, loc, query string) (*athena.StartQueryExecutionResponse, error) {
