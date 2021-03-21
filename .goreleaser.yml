@@ -1,0 +1,20 @@
+project_name: athena-cli
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - go mod tidy
+# https://goreleaser.com/customization/build/
+builds:
+  - ldflags:
+      - -s -w
+      - -X main.Version={{ .Version }}
+      - -X main.Commit={{ .ShortCommit }}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+release:
+  prerelease: auto
