@@ -78,8 +78,10 @@ func (sess *Session) List() error {
 		}
 		fmt.Printf("%v\n", string(b))
 	} else {
-		for _, e := range all {
+		if viper.GetBool(keyHeader) {
 			fmt.Printf("%v\n", strings.Join([]string{"QueryExecutionId", "SubmissionDateTime", "State", "WorkGroup", "StatementType", "Query"}, "\t"))
+		}
+		for _, e := range all {
 			start := *e.Status.SubmissionDateTime
 			fmt.Printf("%v\t%v\t%v\t%v\t%v\t%q\n", *e.QueryExecutionId, start, e.Status.State, *e.WorkGroup, e.StatementType, *e.Query)
 		}
