@@ -28,14 +28,14 @@ jobs:
       run: go test -v .
 
     - name: Slack notification
-      if: success()
+      if: failure()  # success()
       uses: rtCamp/action-slack-notify@v2.0.2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_USERNAME: athena-cli
-        SLACK_ICON_EMOJI: ':tada:'
-        SLACK_TITLE: test success
-        SLACK_COLOR: good
+        SLACK_ICON_EMOJI: ':woman-gesturing-no:'
+        SLACK_TITLE: test failure
+        SLACK_COLOR: danger # good
         SLACK_CHANNEL: api-test
 
   release:
