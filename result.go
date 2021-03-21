@@ -15,7 +15,7 @@ var ResultCmd = &cobra.Command{
 	Short: "Show query reulst",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 		b, err := w.GetResult(args[0])
 		if err != nil {
 			if e, ok := err.(NoRows); ok {
@@ -36,8 +36,8 @@ func (r NoRows) Error() string {
 	return fmt.Sprintf("no rows for %v", r.executionId)
 }
 
-func (world *World) GetResult(id string) (string, error) {
-	r, err := world.athenaClient.GetQueryResultsRequest(&athena.GetQueryResultsInput{QueryExecutionId: aws.String(id)}).Send(world.ctx)
+func (sess *Session) GetResult(id string) (string, error) {
+	r, err := sess.athenaClient.GetQueryResultsRequest(&athena.GetQueryResultsInput{QueryExecutionId: aws.String(id)}).Send(sess.ctx)
 	if err != nil {
 		return "", err
 	}

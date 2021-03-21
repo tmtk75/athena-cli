@@ -13,7 +13,7 @@ var ListWorkGroupsCmd = &cobra.Command{
 	Use:   "list-work-groups",
 	Short: "List all work groups",
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 		err := w.ListWorkGroups()
 		if err != nil {
 			log.Fatalf("%v", err)
@@ -21,8 +21,8 @@ var ListWorkGroupsCmd = &cobra.Command{
 	},
 }
 
-func (world *World) ListWorkGroups() error {
-	r, err := world.athenaClient.ListWorkGroupsRequest(&athena.ListWorkGroupsInput{}).Send(world.ctx)
+func (sess *Session) ListWorkGroups() error {
+	r, err := sess.athenaClient.ListWorkGroupsRequest(&athena.ListWorkGroupsInput{}).Send(sess.ctx)
 	if err != nil {
 		return err
 	}

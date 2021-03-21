@@ -18,7 +18,7 @@ var GetCmd = &cobra.Command{
 	Short: "Get an object from the s3 bucket with execution-id",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 		b, err := w.GetObject(args[0], []string{".csv", ".txt"})
 		if err != nil {
 			log.Fatalf("%v", err)
@@ -27,7 +27,7 @@ var GetCmd = &cobra.Command{
 	},
 }
 
-func (world *World) GetObject(id string, exts []string) (string, error) {
+func (sess *Session) GetObject(id string, exts []string) (string, error) {
 	var (
 		loc = viper.GetString(keyOutputLocation)
 		err error
@@ -45,7 +45,7 @@ func (world *World) GetObject(id string, exts []string) (string, error) {
 			Key:    aws.String(strings.TrimPrefix(u.Path, "/") + "/" + id + ext),
 		}
 		logger.Printf("%v", ext)
-		res, err = world.s3Client.GetObjectRequest(req).Send(world.ctx)
+		res, err = sess.s3Client.GetObjectRequest(req).Send(sess.ctx)
 		if err != nil {
 			logger.Printf("%v", err)
 			continue

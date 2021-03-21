@@ -56,7 +56,7 @@ var QueryCmd = &cobra.Command{
   athena-cli query "select * from cloudtrail_logs where useridentity.principalid like '%yourname%'"
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 
 		var q string
 		if len(args) > 0 {
@@ -105,7 +105,7 @@ func templ(q string) (string, error) {
 	return b.String(), nil
 }
 
-func (world *World) Query(query string) (string, error) {
+func (sess *Session) Query(query string) (string, error) {
 	var (
 		wg     = viper.GetString(keyWorkGroup)
 		loc    = viper.GetString(keyOutputLocation)
@@ -113,13 +113,13 @@ func (world *World) Query(query string) (string, error) {
 	)
 
 	// A guard, check if work-group has quota to scan.
-	if err := world.WorkGroupHasBytesScannedCutoffPerQuery(wg); err != nil {
+	if err := sess.WorkGroupHasBytesScannedCutoffPerQuery(wg); err != nil {
 		if !viper.GetBool(keyQueryForce) {
 			return "", err
 		}
 	}
 
-	r, err := world.ExecuteQuery(wg, dbname, loc, query)
+	r, err := sess.ExecuteQuery(wg, dbname, loc, query)
 	if err != nil {
 		return "", err
 	}
@@ -129,7 +129,7 @@ func (world *World) Query(query string) (string, error) {
 		return "", nil
 	}
 
-	if err := world.WaitExecution(r.QueryExecutionId); err != nil {
+	if err := sess.WaitExecution(r.QueryExecutionId); err != nil {
 		return "", err
 	}
 
@@ -137,9 +137,9 @@ func (world *World) Query(query string) (string, error) {
 
 	var s string
 	if viper.GetBool(keyQueryResultCsv) {
-		s, err = world.GetObject(*r.QueryExecutionId, []string{".txt", ".csv"})
+		s, err = sess.GetObject(*r.QueryExecutionId, []string{".txt", ".csv"})
 	} else {
-		s, err = world.GetResult(*r.QueryExecutionId)
+		s, err = sess.GetResult(*r.QueryExecutionId)
 		if e, ok := err.(NoRows); ok {
 			logger.Printf("%v\n", e)
 			return s, nil
@@ -153,7 +153,7 @@ func (world *World) Query(query string) (string, error) {
 	return s, nil
 }
 
-func (world *World) ExecuteQuery(wg, dbname, loc, query string) (*athena.StartQueryExecutionResponse, error) {
+func (sess *Session) ExecuteQuery(wg, dbname, loc, query string) (*athena.StartQueryExecutionResponse, error) {
 	qc := &athena.QueryExecutionContext{Database: aws.String(dbname)}
 	rc := &athena.ResultConfiguration{OutputLocation: aws.String(loc)}
 	i := athena.StartQueryExecutionInput{
@@ -162,26 +162,26 @@ func (world *World) ExecuteQuery(wg, dbname, loc, query string) (*athena.StartQu
 		ResultConfiguration:   rc,
 		WorkGroup:             aws.String(wg),
 	}
-	r, err := world.athenaClient.StartQueryExecutionRequest(&i).Send(world.ctx)
+	r, err := sess.athenaClient.StartQueryExecutionRequest(&i).Send(sess.ctx)
 	if err != nil {
 		return nil, err
 	}
 	return r, nil
 }
 
-func (world *World) WaitExecution(id *string) error {
+func (sess *Session) WaitExecution(id *string) error {
 	for {
-		//to, _ := world.ctx.Deadline()
+		//to, _ := sess.ctx.Deadline()
 		//log.Printf("to: %v, before: %v", to, to.Before(time.Now()))
 		select {
-		case <-world.ctx.Done():
+		case <-sess.ctx.Done():
 			bgctx, _ := context.WithTimeout(context.Background(), time.Second*3) // API in this func works with another context in short timeout.
-			_, err := world.athenaClient.StopQueryExecutionRequest(&athena.StopQueryExecutionInput{QueryExecutionId: id}).Send(bgctx)
+			_, err := sess.athenaClient.StopQueryExecutionRequest(&athena.StopQueryExecutionInput{QueryExecutionId: id}).Send(bgctx)
 			if err != nil {
-				return fmt.Errorf("failed to stop query execution in %v for %v, %w", world.ctx.Err(), *id, err)
+				return fmt.Errorf("failed to stop query execution in %v for %v, %w", sess.ctx.Err(), *id, err)
 			}
 			logger.Printf("stop query execution for %v", *id)
-			return fmt.Errorf("%w for execution-id, %v", world.ctx.Err(), *id)
+			return fmt.Errorf("%w for execution-id, %v", sess.ctx.Err(), *id)
 		default:
 		}
 
@@ -190,7 +190,7 @@ func (world *World) WaitExecution(id *string) error {
 		time.Sleep(d)
 
 		bgctx, _ := context.WithTimeout(context.Background(), time.Second*3) // API in this func works with another context in short timeout.
-		r, err := world.athenaClient.GetQueryExecutionRequest(&athena.GetQueryExecutionInput{QueryExecutionId: id}).Send(bgctx)
+		r, err := sess.athenaClient.GetQueryExecutionRequest(&athena.GetQueryExecutionInput{QueryExecutionId: id}).Send(bgctx)
 		if err != nil {
 			return err
 		}

@@ -39,7 +39,7 @@ var ListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all available executions",
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 		err := w.List()
 		if err != nil {
 			log.Fatalf("%v", err)
@@ -47,12 +47,12 @@ var ListCmd = &cobra.Command{
 	},
 }
 
-func (world *World) List() error {
+func (sess *Session) List() error {
 	var (
 		wg = viper.GetString(keyWorkGroup)
 	)
 
-	r, err := world.athenaClient.ListQueryExecutionsRequest(&athena.ListQueryExecutionsInput{WorkGroup: aws.String(wg)}).Send(world.ctx)
+	r, err := sess.athenaClient.ListQueryExecutionsRequest(&athena.ListQueryExecutionsInput{WorkGroup: aws.String(wg)}).Send(sess.ctx)
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (world *World) List() error {
 		if count >= viper.GetInt(keyListLimit) {
 			break
 		}
-		r, err := world.athenaClient.GetQueryExecutionRequest(&athena.GetQueryExecutionInput{QueryExecutionId: aws.String(e)}).Send(world.ctx)
+		r, err := sess.athenaClient.GetQueryExecutionRequest(&athena.GetQueryExecutionInput{QueryExecutionId: aws.String(e)}).Send(sess.ctx)
 		if err != nil {
 			log.Printf("%v", err)
 		}

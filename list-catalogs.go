@@ -13,7 +13,7 @@ var ListCatalogsCmd = &cobra.Command{
 	Use:   "list-catalogs",
 	Short: "List all catalogs",
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 		err := w.ListCatalogs()
 		if err != nil {
 			log.Fatalf("%v", err)
@@ -21,8 +21,8 @@ var ListCatalogsCmd = &cobra.Command{
 	},
 }
 
-func (world *World) ListCatalogs() error {
-	r, err := world.athenaClient.ListDataCatalogsRequest(&athena.ListDataCatalogsInput{}).Send(world.ctx)
+func (sess *Session) ListCatalogs() error {
+	r, err := sess.athenaClient.ListDataCatalogsRequest(&athena.ListDataCatalogsInput{}).Send(sess.ctx)
 	if err != nil {
 		return err
 	}

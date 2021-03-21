@@ -15,7 +15,7 @@ var GetWorkGroupCmd = &cobra.Command{
 	Short: "Show a work group",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 		err := w.GetWorkGroup(args[0])
 		if err != nil {
 			log.Fatalf("%v", err)
@@ -23,10 +23,10 @@ var GetWorkGroupCmd = &cobra.Command{
 	},
 }
 
-func (world *World) GetWorkGroup(name string) error {
-	r, err := world.athenaClient.GetWorkGroupRequest(&athena.GetWorkGroupInput{
+func (sess *Session) GetWorkGroup(name string) error {
+	r, err := sess.athenaClient.GetWorkGroupRequest(&athena.GetWorkGroupInput{
 		WorkGroup: aws.String(name),
-	}).Send(world.ctx)
+	}).Send(sess.ctx)
 	if err != nil {
 		return err
 	}
@@ -38,10 +38,10 @@ func (world *World) GetWorkGroup(name string) error {
 	return nil
 }
 
-func (world *World) WorkGroupHasBytesScannedCutoffPerQuery(wg string) error {
-	r, err := world.athenaClient.GetWorkGroupRequest(&athena.GetWorkGroupInput{
+func (sess *Session) WorkGroupHasBytesScannedCutoffPerQuery(wg string) error {
+	r, err := sess.athenaClient.GetWorkGroupRequest(&athena.GetWorkGroupInput{
 		WorkGroup: aws.String(wg),
-	}).Send(world.ctx)
+	}).Send(sess.ctx)
 	if err != nil {
 		return err
 	}

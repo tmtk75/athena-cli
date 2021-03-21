@@ -18,13 +18,13 @@ var ShowCreateTableCmd = &cobra.Command{
 	Example: ``,
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 		q := fmt.Sprintf("SHOW CREATE TABLE %s", args[0])
 		Query(w, q)
 	},
 }
 
-func Query(w *World, q string) {
+func Query(w *Session, q string) {
 	s, err := w.Query(q)
 	if err != nil {
 		log.Fatalf("%v", err)

@@ -28,13 +28,13 @@ var logger struct {
 	Printf func(format string, v ...interface{})
 }
 
-type World struct {
+type Session struct {
 	ctx          context.Context
 	athenaClient *athena.Client
 	s3Client     *s3.Client
 }
 
-func NewWorld() *World {
+func NewSession() *Session {
 	if viper.GetBool(keyVerbose) {
 		logger.Printf = log.Printf
 	}
@@ -55,7 +55,7 @@ func NewWorld() *World {
 		}
 	}()
 
-	return &World{
+	return &Session{
 		ctx:          ctx,
 		athenaClient: athena.New(cfg),
 		s3Client:     s3.New(cfg),

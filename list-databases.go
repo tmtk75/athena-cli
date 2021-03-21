@@ -25,7 +25,7 @@ var ListDatabasesCmd = &cobra.Command{
 	Use:   "list-databases",
 	Short: "List all databases",
 	Run: func(cmd *cobra.Command, args []string) {
-		w := NewWorld()
+		w := NewSession()
 		err := w.ListDatabases()
 		if err != nil {
 			log.Fatalf("%v", err)
@@ -33,11 +33,11 @@ var ListDatabasesCmd = &cobra.Command{
 	},
 }
 
-func (world *World) ListDatabases() error {
+func (sess *Session) ListDatabases() error {
 	name := viper.GetString(keyCatalogName)
-	r, err := world.athenaClient.ListDatabasesRequest(&athena.ListDatabasesInput{
+	r, err := sess.athenaClient.ListDatabasesRequest(&athena.ListDatabasesInput{
 		CatalogName: aws.String(name),
-	}).Send(world.ctx)
+	}).Send(sess.ctx)
 	if err != nil {
 		return err
 	}

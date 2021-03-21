@@ -31,7 +31,7 @@ var ShowTablesCmd = &cobra.Command{
 		if len(args) > 0 {
 			name = args[0]
 		}
-		w := NewWorld()
+		w := NewSession()
 		err := w.ShowTables(name)
 		if err != nil {
 			log.Fatalf("%v", err)
@@ -39,7 +39,7 @@ var ShowTablesCmd = &cobra.Command{
 	},
 }
 
-func (world *World) ShowTables(tablename string) error {
+func (sess *Session) ShowTables(tablename string) error {
 	var (
 		catalog = viper.GetString(keyCatalogName)
 		dbname  = viper.GetString(keyDatabaseName)
@@ -47,11 +47,11 @@ func (world *World) ShowTables(tablename string) error {
 	logger.Printf("catalog-name: %v, database-name: %v", catalog, dbname)
 	//
 	if tablename != "" {
-		r, err := world.athenaClient.GetTableMetadataRequest(&athena.GetTableMetadataInput{
+		r, err := sess.athenaClient.GetTableMetadataRequest(&athena.GetTableMetadataInput{
 			CatalogName:  aws.String(catalog),
 			DatabaseName: aws.String(dbname),
 			TableName:    aws.String(tablename),
-		}).Send(world.ctx)
+		}).Send(sess.ctx)
 		if err != nil {
 			return err
 		}
@@ -64,10 +64,10 @@ func (world *World) ShowTables(tablename string) error {
 	}
 
 	// Show tables.
-	r, err := world.athenaClient.ListTableMetadataRequest(&athena.ListTableMetadataInput{
+	r, err := sess.athenaClient.ListTableMetadataRequest(&athena.ListTableMetadataInput{
 		CatalogName:  aws.String(catalog),
 		DatabaseName: aws.String(dbname),
-	}).Send(world.ctx)
+	}).Send(sess.ctx)
 	if err != nil {
 		return err
 	}
