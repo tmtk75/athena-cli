@@ -36,9 +36,7 @@ var ListDatabasesCmd = &cobra.Command{
 
 func (sess *Session) ListDatabases() error {
 	name := viper.GetString(keyCatalogName)
-	r, err := sess.athenaClient.ListDatabasesRequest(&athena.ListDatabasesInput{
-		CatalogName: aws.String(name),
-	}).Send(sess.ctx)
+	r, err := sess.athenaClient.ListDatabases(sess.ctx, &athena.ListDatabasesInput{CatalogName: aws.String(name)})
 	if err != nil {
 		return err
 	}

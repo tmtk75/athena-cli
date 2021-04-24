@@ -26,7 +26,7 @@ var ListCatalogsCmd = &cobra.Command{
 }
 
 func (sess *Session) ListCatalogs() error {
-	r, err := sess.athenaClient.ListDataCatalogsRequest(&athena.ListDataCatalogsInput{}).Send(sess.ctx)
+	r, err := sess.athenaClient.ListDataCatalogs(sess.ctx, &athena.ListDataCatalogsInput{})
 	if err != nil {
 		return err
 	}

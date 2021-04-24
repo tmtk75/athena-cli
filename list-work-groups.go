@@ -26,7 +26,7 @@ var ListWorkGroupsCmd = &cobra.Command{
 }
 
 func (sess *Session) ListWorkGroups() error {
-	r, err := sess.athenaClient.ListWorkGroupsRequest(&athena.ListWorkGroupsInput{}).Send(sess.ctx)
+	r, err := sess.athenaClient.ListWorkGroups(sess.ctx, &athena.ListWorkGroupsInput{})
 	if err != nil {
 		return err
 	}

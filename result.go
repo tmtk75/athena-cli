@@ -41,7 +41,7 @@ func (r NoRows) Error() string {
 }
 
 func (sess *Session) GetResult(id string) (string, error) {
-	r, err := sess.athenaClient.GetQueryResultsRequest(&athena.GetQueryResultsInput{QueryExecutionId: aws.String(id)}).Send(sess.ctx)
+	r, err := sess.athenaClient.GetQueryResults(sess.ctx, &athena.GetQueryResultsInput{QueryExecutionId: aws.String(id)})
 	if err != nil {
 		return "", err
 	}

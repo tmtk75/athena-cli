@@ -7,7 +7,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/aws/aws-sdk-go-v2/aws/external"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/athena"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/spf13/viper"
@@ -40,7 +40,7 @@ func NewSession() *Session {
 	}
 
 	logger.Printf("version: %v, commit: %v", Version, Commit)
-	cfg, err := external.LoadDefaultAWSConfig()
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
@@ -57,7 +57,7 @@ func NewSession() *Session {
 
 	return &Session{
 		ctx:          ctx,
-		athenaClient: athena.New(cfg),
-		s3Client:     s3.New(cfg),
+		athenaClient: athena.NewFromConfig(cfg),
+		s3Client:     s3.NewFromConfig(cfg),
 	}
 }

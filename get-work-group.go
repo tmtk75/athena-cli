@@ -28,9 +28,7 @@ var GetWorkGroupCmd = &cobra.Command{
 }
 
 func (sess *Session) GetWorkGroup(name string) error {
-	r, err := sess.athenaClient.GetWorkGroupRequest(&athena.GetWorkGroupInput{
-		WorkGroup: aws.String(name),
-	}).Send(sess.ctx)
+	r, err := sess.athenaClient.GetWorkGroup(sess.ctx, &athena.GetWorkGroupInput{WorkGroup: aws.String(name)})
 	if err != nil {
 		return err
 	}
@@ -43,9 +41,7 @@ func (sess *Session) GetWorkGroup(name string) error {
 }
 
 func (sess *Session) WorkGroupHasBytesScannedCutoffPerQuery(wg string) error {
-	r, err := sess.athenaClient.GetWorkGroupRequest(&athena.GetWorkGroupInput{
-		WorkGroup: aws.String(wg),
-	}).Send(sess.ctx)
+	r, err := sess.athenaClient.GetWorkGroup(sess.ctx, &athena.GetWorkGroupInput{WorkGroup: aws.String(wg)})
 	if err != nil {
 		return err
 	}

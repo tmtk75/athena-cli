@@ -42,14 +42,14 @@ func (sess *Session) GetObject(id string, exts []string) (string, error) {
 		return "", err
 	}
 
-	var res *s3.GetObjectResponse
+	var res *s3.GetObjectOutput
 	for _, ext := range exts {
 		req := &s3.GetObjectInput{
 			Bucket: aws.String(u.Host),
 			Key:    aws.String(strings.TrimPrefix(u.Path, "/") + "/" + id + ext),
 		}
 		logger.Printf("%v", ext)
-		res, err = sess.s3Client.GetObjectRequest(req).Send(sess.ctx)
+		res, err = sess.s3Client.GetObject(sess.ctx, req)
 		if err != nil {
 			logger.Printf("%v", err)
 			continue

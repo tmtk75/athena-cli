@@ -48,11 +48,11 @@ func (sess *Session) ShowTables(tablename string) error {
 	logger.Printf("catalog-name: %v, database-name: %v", catalog, dbname)
 	//
 	if tablename != "" {
-		r, err := sess.athenaClient.GetTableMetadataRequest(&athena.GetTableMetadataInput{
+		r, err := sess.athenaClient.GetTableMetadata(sess.ctx, &athena.GetTableMetadataInput{
 			CatalogName:  aws.String(catalog),
 			DatabaseName: aws.String(dbname),
 			TableName:    aws.String(tablename),
-		}).Send(sess.ctx)
+		})
 		if err != nil {
 			return err
 		}
@@ -65,10 +65,10 @@ func (sess *Session) ShowTables(tablename string) error {
 	}
 
 	// Show tables.
-	r, err := sess.athenaClient.ListTableMetadataRequest(&athena.ListTableMetadataInput{
+	r, err := sess.athenaClient.ListTableMetadata(sess.ctx, &athena.ListTableMetadataInput{
 		CatalogName:  aws.String(catalog),
 		DatabaseName: aws.String(dbname),
-	}).Send(sess.ctx)
+	})
 	if err != nil {
 		return err
 	}

@@ -13,6 +13,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/athena"
+	"github.com/aws/aws-sdk-go-v2/service/athena/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -154,16 +155,16 @@ func (sess *Session) Query(query string) (string, error) {
 	return s, nil
 }
 
-func (sess *Session) ExecuteQuery(wg, dbname, loc, query string) (*athena.StartQueryExecutionResponse, error) {
-	qc := &athena.QueryExecutionContext{Database: aws.String(dbname)}
-	rc := &athena.ResultConfiguration{OutputLocation: aws.String(loc)}
+func (sess *Session) ExecuteQuery(wg, dbname, loc, query string) (*athena.StartQueryExecutionOutput, error) {
+	qc := &types.QueryExecutionContext{Database: aws.String(dbname)}
+	rc := &types.ResultConfiguration{OutputLocation: aws.String(loc)}
 	i := athena.StartQueryExecutionInput{
 		QueryString:           aws.String(query),
 		QueryExecutionContext: qc,
 		ResultConfiguration:   rc,
 		WorkGroup:             aws.String(wg),
 	}
-	r, err := sess.athenaClient.StartQueryExecutionRequest(&i).Send(sess.ctx)
+	r, err := sess.athenaClient.StartQueryExecution(sess.ctx, &i)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +178,7 @@ func (sess *Session) WaitExecution(id *string) error {
 		select {
 		case <-sess.ctx.Done():
 			bgctx, _ := context.WithTimeout(context.Background(), time.Second*3) // API in this func works with another context in short timeout.
-			_, err := sess.athenaClient.StopQueryExecutionRequest(&athena.StopQueryExecutionInput{QueryExecutionId: id}).Send(bgctx)
+			_, err := sess.athenaClient.StopQueryExecution(bgctx, &athena.StopQueryExecutionInput{QueryExecutionId: id})
 			if err != nil {
 				return fmt.Errorf("failed to stop query execution in %v for %v, %w", sess.ctx.Err(), *id, err)
 			}
@@ -191,7 +192,7 @@ func (sess *Session) WaitExecution(id *string) error {
 		time.Sleep(d)
 
 		bgctx, _ := context.WithTimeout(context.Background(), time.Second*3) // API in this func works with another context in short timeout.
-		r, err := sess.athenaClient.GetQueryExecutionRequest(&athena.GetQueryExecutionInput{QueryExecutionId: id}).Send(bgctx)
+		r, err := sess.athenaClient.GetQueryExecution(bgctx, &athena.GetQueryExecutionInput{QueryExecutionId: id})
 		if err != nil {
 			return err
 		}

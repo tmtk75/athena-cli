@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/athena"
+	"github.com/aws/aws-sdk-go-v2/service/athena/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -53,18 +54,18 @@ func (sess *Session) List() error {
 		wg = viper.GetString(keyWorkGroup)
 	)
 
-	r, err := sess.athenaClient.ListQueryExecutionsRequest(&athena.ListQueryExecutionsInput{WorkGroup: aws.String(wg)}).Send(sess.ctx)
+	r, err := sess.athenaClient.ListQueryExecutions(sess.ctx, &athena.ListQueryExecutionsInput{WorkGroup: aws.String(wg)})
 	if err != nil {
 		return err
 	}
 
-	all := make([]*athena.QueryExecution, 0)
+	all := make([]*types.QueryExecution, 0)
 	count := 0
 	for _, e := range r.QueryExecutionIds {
 		if count >= viper.GetInt(keyListLimit) {
 			break
 		}
-		r, err := sess.athenaClient.GetQueryExecutionRequest(&athena.GetQueryExecutionInput{QueryExecutionId: aws.String(e)}).Send(sess.ctx)
+		r, err := sess.athenaClient.GetQueryExecution(sess.ctx, &athena.GetQueryExecutionInput{QueryExecutionId: aws.String(e)})
 		if err != nil {
 			log.Printf("%v", err)
 		}
