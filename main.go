@@ -47,7 +47,9 @@ func NewSession() *Session {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration(keyTimeout))
+	to := viper.GetDuration(keyTimeout)
+	logger.Printf("timeout: %v", to)
+	ctx, cancel := context.WithTimeout(context.Background(), to)
 	stssvc := sts.NewFromConfig(cfg)
 	r, err := stssvc.GetCallerIdentity(ctx, &sts.GetCallerIdentityInput{})
 	if err != nil {
@@ -88,5 +90,12 @@ func initViper(aid string) *viper.Viper {
 		return findSub("profiles", p)
 	}
 
-	return findSub("accounts", aid)
+	// New empty viper.
+	n := viper.New()
+	n.MergeConfigMap(findSub("accounts", aid).AllSettings())
+	n.MergeConfigMap(viper.AllSettings())
+
+	//
+	//logger.Printf("%v", n.AllSettings())
+	return n
 }

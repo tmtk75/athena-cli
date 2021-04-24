@@ -16,7 +16,7 @@ var InfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		sess := NewSession()
 		v := sess.v
-		fmt.Printf("timeout: %s\n", v.GetString(keyTimeout))
+		//fmt.Printf("timeout: %s\n", v.GetString(keyTimeout))
 		fmt.Printf("catalog-name: %s\n", v.GetString(keyCatalogName))
 		fmt.Printf("work-group: %s\n", v.GetString(keyWorkGroup))
 		fmt.Printf("database-name: %s\n", v.GetString(keyDatabaseName))
