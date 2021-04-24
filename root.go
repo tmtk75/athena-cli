@@ -18,6 +18,7 @@ func init() {
 	f.String(keyDatabaseName, "", "Athena database name")
 	f.String(keyCatalogName, "AwsDataCatalog", "data catalog name")
 	f.Bool(keyVerbose, false, "Work verbosely")
+	f.String(keyProfile, "default", "Profile name")
 	f.Duration(keyTimeout, time.Second*5, "Timeout ex) 30s")
 	f.Bool(keyDryRun, false, "Dry-run only printing templated query.")
 
@@ -30,6 +31,7 @@ func init() {
 		{key: keyDatabaseName, env: "DATABASE_NAME"},
 		{key: keyCatalogName, env: "CATALOG_NAME"},
 		{key: keyVerbose, env: "VERBOSE"},
+		{key: keyProfile, env: "PROFILE"},
 		{key: keyTimeout, env: "TIMEOUT"},
 		{key: keyDryRun},
 	}
@@ -57,6 +59,7 @@ var RootCmd = &cobra.Command{
 
 const (
 	keyVerbose        = "verbose"
+	keyProfile        = "profile"
 	keyWorkGroup      = "work-group"
 	keyOutputLocation = "output-location"
 	keyDatabaseName   = "database-name"
