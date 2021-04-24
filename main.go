@@ -33,7 +33,7 @@ type Session struct {
 	ctx          context.Context
 	athenaClient *athena.Client
 	s3Client     *s3.Client
-	accountId    string
+	v            *viper.Viper
 }
 
 func NewSession() *Session {
@@ -68,6 +68,25 @@ func NewSession() *Session {
 		ctx:          ctx,
 		athenaClient: athena.NewFromConfig(cfg),
 		s3Client:     s3.NewFromConfig(cfg),
-		accountId:    *r.Account,
+		v:            initViper(*r.Account),
 	}
+}
+
+func initViper(aid string) *viper.Viper {
+	findSub := func(parent, key string) *viper.Viper {
+		pkey := fmt.Sprintf("%s.%s", parent, key)
+		v := viper.Sub(pkey)
+		if v == nil {
+			log.Fatalf("no found profile, %v", pkey)
+		}
+		logger.Printf("use a profile, %v", pkey)
+		return v
+	}
+
+	// use it if given explicitly.
+	if p := viper.GetString(keyProfile); p != "" {
+		return findSub("profiles", p)
+	}
+
+	return findSub("accounts", aid)
 }
