@@ -10,6 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	RootCmd.AddCommand(GetWorkGroupCmd)
+}
+
 var GetWorkGroupCmd = &cobra.Command{
 	Use:   "get-work-group <name>",
 	Short: "Show a work group",

@@ -10,6 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	RootCmd.AddCommand(ResultCmd)
+}
+
 var ResultCmd = &cobra.Command{
 	Use:   `result [flags] <execution-id>`,
 	Short: "Show query reulst",

@@ -13,6 +13,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+func ini() {
+	RootCmd.AddCommand(GetCmd)
+}
+
 var GetCmd = &cobra.Command{
 	Use:   "get [flags] <execution-id>",
 	Short: "Get an object from the s3 bucket with execution-id",

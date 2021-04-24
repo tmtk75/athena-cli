@@ -16,6 +16,7 @@ const (
 )
 
 func init() {
+	RootCmd.AddCommand(ListDatabasesCmd)
 	f := ListDatabasesCmd.PersistentFlags()
 	f.Bool("json", false, "JSON")
 	viper.BindPFlag(keyListDatabasesJson, f.Lookup("json"))

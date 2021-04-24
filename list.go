@@ -13,6 +13,7 @@ import (
 )
 
 func init() {
+	RootCmd.AddCommand(ListCmd)
 	f := ListCmd.PersistentFlags()
 
 	f.Int(keyListLimit, 5, "number of limitation to list exeuctions")

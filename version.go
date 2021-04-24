@@ -9,6 +9,10 @@ import (
 var Commit string
 var Version string
 
+func init() {
+	RootCmd.AddCommand(VersionCmd)
+}
+
 var VersionCmd = &cobra.Command{
 	Use:  "version",
 	Args: cobra.NoArgs,

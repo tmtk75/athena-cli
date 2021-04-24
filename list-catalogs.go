@@ -9,6 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	RootCmd.AddCommand(ListCatalogsCmd)
+}
+
 var ListCatalogsCmd = &cobra.Command{
 	Use:   "list-catalogs",
 	Short: "List all catalogs",

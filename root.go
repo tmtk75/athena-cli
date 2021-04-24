@@ -37,36 +37,6 @@ func init() {
 		viper.BindPFlag(e.key, f.Lookup(e.key))
 		viper.BindEnv(e.key, e.env)
 	}
-
-	// Query
-	RootCmd.AddCommand(QueryCmd)
-
-	// Get
-	RootCmd.AddCommand(GetCmd)
-
-	// Result
-	RootCmd.AddCommand(ResultCmd)
-
-	// List
-	RootCmd.AddCommand(ListCmd)
-
-	// List databases
-	RootCmd.AddCommand(ListDatabasesCmd)
-
-	// List catalogs
-	RootCmd.AddCommand(ListCatalogsCmd)
-
-	// Show catalogs
-	RootCmd.AddCommand(ShowTablesCmd)
-
-	// List work groups
-	RootCmd.AddCommand(ListWorkGroupsCmd)
-
-	// Get work groups
-	RootCmd.AddCommand(GetWorkGroupCmd)
-
-	// Version
-	RootCmd.AddCommand(VersionCmd)
 }
 
 func initConfig() {

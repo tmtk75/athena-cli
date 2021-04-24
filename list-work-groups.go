@@ -9,6 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	RootCmd.AddCommand(ListWorkGroupsCmd)
+}
+
 var ListWorkGroupsCmd = &cobra.Command{
 	Use:   "list-work-groups",
 	Short: "List all work groups",

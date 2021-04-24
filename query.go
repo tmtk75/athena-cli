@@ -18,6 +18,7 @@ import (
 )
 
 func init() {
+	RootCmd.AddCommand(QueryCmd)
 	f := QueryCmd.PersistentFlags()
 
 	f.Bool(keyQuerySuppressWait, false, "Suppress waiting for completion of query execution.")

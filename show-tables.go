@@ -17,6 +17,7 @@ const (
 )
 
 func init() {
+	RootCmd.AddCommand(ShowTablesCmd)
 	f := ShowTablesCmd.PersistentFlags()
 	f.Bool("json", false, "JSON")
 	viper.BindPFlag(keyShowTablesJson, f.Lookup("json"))
