@@ -18,7 +18,7 @@ func init() {
 	f.String(keyDatabaseName, "", "Athena database name")
 	f.String(keyCatalogName, "AwsDataCatalog", "data catalog name")
 	f.Bool(keyVerbose, false, "Work verbosely")
-	f.String(keyProfile, "default", "Profile name")
+	f.String(keyProfile, "", "Profile name")
 	f.Duration(keyTimeout, time.Second*5, "Timeout ex) 30s")
 	f.Bool(keyDryRun, false, "Dry-run only printing templated query.")
 
@@ -43,8 +43,8 @@ func init() {
 
 func initConfig() {
 	viper.SetConfigName("config")
-	viper.AddConfigPath("$HOME/.config/athena-cli")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("$HOME/.config/athena-cli")
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err != nil {
 		if cerr, b := err.(viper.ConfigFileNotFoundError); !b {

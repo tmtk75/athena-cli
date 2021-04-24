@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/athena"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/spf13/viper"
 )
 
@@ -32,6 +33,7 @@ type Session struct {
 	ctx          context.Context
 	athenaClient *athena.Client
 	s3Client     *s3.Client
+	accountId    string
 }
 
 func NewSession() *Session {
@@ -46,6 +48,13 @@ func NewSession() *Session {
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), viper.GetDuration(keyTimeout))
+	stssvc := sts.NewFromConfig(cfg)
+	r, err := stssvc.GetCallerIdentity(ctx, &sts.GetCallerIdentityInput{})
+	if err != nil {
+		log.Fatalf("failed for get-caller-identity@sts, %v", err)
+	}
+	logger.Printf("aws-account-id: %v", *r.Account)
+
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt)
 	go func() {
@@ -59,5 +68,6 @@ func NewSession() *Session {
 		ctx:          ctx,
 		athenaClient: athena.NewFromConfig(cfg),
 		s3Client:     s3.NewFromConfig(cfg),
+		accountId:    *r.Account,
 	}
 }
