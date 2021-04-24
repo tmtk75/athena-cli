@@ -70,10 +70,15 @@ func init() {
 }
 
 func initConfig() {
-	viper.SetConfigName(".athena-cli")
+	viper.SetConfigName("config")
+	viper.AddConfigPath("$HOME/.config/athena-cli")
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
-	viper.ReadInConfig()
+	if err := viper.ReadInConfig(); err != nil {
+		if cerr, b := err.(viper.ConfigFileNotFoundError); !b {
+			panic(cerr)
+		}
+	}
 }
 
 var RootCmd = &cobra.Command{
