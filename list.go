@@ -51,7 +51,7 @@ var ListCmd = &cobra.Command{
 
 func (sess *Session) List() error {
 	var (
-		wg = viper.GetString(keyWorkGroup)
+		wg = sess.v.GetString(keyWorkGroup)
 	)
 
 	r, err := sess.athenaClient.ListQueryExecutions(sess.ctx, &athena.ListQueryExecutionsInput{WorkGroup: aws.String(wg)})
@@ -62,7 +62,7 @@ func (sess *Session) List() error {
 	all := make([]*types.QueryExecution, 0)
 	count := 0
 	for _, e := range r.QueryExecutionIds {
-		if count >= viper.GetInt(keyListLimit) {
+		if count >= sess.v.GetInt(keyListLimit) {
 			break
 		}
 		r, err := sess.athenaClient.GetQueryExecution(sess.ctx, &athena.GetQueryExecutionInput{QueryExecutionId: aws.String(e)})
@@ -73,14 +73,14 @@ func (sess *Session) List() error {
 		count++
 	}
 
-	if viper.GetBool(keyJson) {
+	if sess.v.GetBool(keyJson) {
 		b, err := json.MarshalIndent(all, "", "  ")
 		if err != nil {
 			return err
 		}
 		fmt.Printf("%v\n", string(b))
 	} else {
-		if viper.GetBool(keyHeader) {
+		if sess.v.GetBool(keyHeader) {
 			fmt.Printf("%v\n", strings.Join([]string{"QueryExecutionId", "SubmissionDateTime", "State", "WorkGroup", "StatementType", "Query"}, "\t"))
 		}
 		for _, e := range all {

@@ -58,12 +58,14 @@ var RootCmd = &cobra.Command{
 }
 
 const (
-	keyVerbose        = "verbose"
-	keyProfile        = "profile"
+	// global
+	keyVerbose = "verbose"
+	keyProfile = "profile"
+	keyTimeout = "timeout"
+	keyDryRun  = "dry-run"
+	// each profile
 	keyWorkGroup      = "work-group"
 	keyOutputLocation = "output-location"
 	keyDatabaseName   = "database-name"
-	keyTimeout        = "timeout"
-	keyDryRun         = "dry-run"
 	keyCatalogName    = "catalog-name"
 )

@@ -42,8 +42,8 @@ var ShowTablesCmd = &cobra.Command{
 
 func (sess *Session) ShowTables(tablename string) error {
 	var (
-		catalog = viper.GetString(keyCatalogName)
-		dbname  = viper.GetString(keyDatabaseName)
+		catalog = sess.v.GetString(keyCatalogName)
+		dbname  = sess.v.GetString(keyDatabaseName)
 	)
 	logger.Printf("catalog-name: %v, database-name: %v", catalog, dbname)
 	//
@@ -73,7 +73,7 @@ func (sess *Session) ShowTables(tablename string) error {
 		return err
 	}
 
-	if viper.GetBool(keyShowTablesJson) {
+	if sess.v.GetBool(keyShowTablesJson) {
 		b, err := json.MarshalIndent(r, "", "  ")
 		if err != nil {
 			return err

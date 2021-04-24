@@ -35,13 +35,13 @@ var ListDatabasesCmd = &cobra.Command{
 }
 
 func (sess *Session) ListDatabases() error {
-	name := viper.GetString(keyCatalogName)
+	name := sess.v.GetString(keyCatalogName)
 	r, err := sess.athenaClient.ListDatabases(sess.ctx, &athena.ListDatabasesInput{CatalogName: aws.String(name)})
 	if err != nil {
 		return err
 	}
 
-	if viper.GetBool(keyListDatabasesJson) {
+	if sess.v.GetBool(keyListDatabasesJson) {
 		b, err := json.MarshalIndent(r, "", "  ")
 		if err != nil {
 			return err

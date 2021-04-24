@@ -10,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 func ini() {
@@ -33,7 +32,7 @@ var GetCmd = &cobra.Command{
 
 func (sess *Session) GetObject(id string, exts []string) (string, error) {
 	var (
-		loc = viper.GetString(keyOutputLocation)
+		loc = sess.v.GetString(keyOutputLocation)
 		err error
 	)
 

@@ -75,7 +75,7 @@ var QueryCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("%v", err)
 		}
-		if viper.GetBool(keyDryRun) {
+		if w.v.GetBool(keyDryRun) {
 			fmt.Printf("%v\n", q)
 			return
 		}
@@ -109,14 +109,14 @@ func templ(q string) (string, error) {
 
 func (sess *Session) Query(query string) (string, error) {
 	var (
-		wg     = viper.GetString(keyWorkGroup)
-		loc    = viper.GetString(keyOutputLocation)
-		dbname = viper.GetString(keyDatabaseName)
+		wg     = sess.v.GetString(keyWorkGroup)
+		loc    = sess.v.GetString(keyOutputLocation)
+		dbname = sess.v.GetString(keyDatabaseName)
 	)
 
 	// A guard, check if work-group has quota to scan.
 	if err := sess.WorkGroupHasBytesScannedCutoffPerQuery(wg); err != nil {
-		if !viper.GetBool(keyQueryForce) {
+		if !sess.v.GetBool(keyQueryForce) {
 			return "", err
 		}
 	}
@@ -126,7 +126,7 @@ func (sess *Session) Query(query string) (string, error) {
 		return "", err
 	}
 
-	if viper.GetBool(keyQuerySuppressWait) {
+	if sess.v.GetBool(keyQuerySuppressWait) {
 		fmt.Printf("%v\n", *r.QueryExecutionId)
 		return "", nil
 	}
@@ -138,7 +138,7 @@ func (sess *Session) Query(query string) (string, error) {
 	logger.Printf("query-execution-id: %v", *r.QueryExecutionId)
 
 	var s string
-	if viper.GetBool(keyQueryResultCsv) {
+	if sess.v.GetBool(keyQueryResultCsv) {
 		s, err = sess.GetObject(*r.QueryExecutionId, []string{".txt", ".csv"})
 	} else {
 		s, err = sess.GetResult(*r.QueryExecutionId)
@@ -187,7 +187,7 @@ func (sess *Session) WaitExecution(id *string) error {
 		default:
 		}
 
-		d := viper.GetDuration(keyQueryWaitDuration)
+		d := sess.v.GetDuration(keyQueryWaitDuration)
 		logger.Printf("wait for %v", d)
 		time.Sleep(d)
 
