@@ -10,10 +10,10 @@ import (
 const (
 	keyProfile = "profile"
 	// each profile
-	keyWorkGroup      = "work-group"
-	keyOutputLocation = "output-location"
-	keyDatabaseName   = "database-name"
-	keyCatalogName    = "catalog-name"
+	keyProfileWorkGroup      = "work-group"
+	keyProfileOutputLocation = "output-location"
+	keyProfileDatabaseName   = "database-name"
+	keyProfileCatalogName    = "catalog-name"
 )
 
 // find a sub for given account-id
@@ -57,17 +57,17 @@ func (p *Profile) either(key, def string) string {
 }
 
 func (p *Profile) WorkGroup() string {
-	return p.either(keyWorkGroup, "primary")
+	return p.either(keyProfileWorkGroup, "primary")
 }
 
 func (p *Profile) CatalogName() string {
-	return p.either(keyCatalogName, "AwsDataCatalog")
+	return p.either(keyProfileCatalogName, "AwsDataCatalog")
 }
 
 func (p *Profile) DatabaseName() string {
-	return p.either(keyDatabaseName, "")
+	return p.either(keyProfileDatabaseName, "")
 }
 
 func (p *Profile) OutputLocation() string {
-	return p.either(keyOutputLocation, "")
+	return p.either(keyProfileOutputLocation, "")
 }

@@ -15,10 +15,10 @@ func init() {
 
 	// profile options
 	f.String(keyProfile, "", "Profile name")
-	f.String(keyWorkGroup, "", "Athena work group")
-	f.String(keyOutputLocation, "", "S3 URL for output, for instance, s3://your-bucket-name/path/to")
-	f.String(keyDatabaseName, "", "Athena database name")
-	f.String(keyCatalogName, "", "data catalog name")
+	f.String(keyProfileWorkGroup, "", "Athena work group")
+	f.String(keyProfileOutputLocation, "", "S3 URL for output, for instance, s3://your-bucket-name/path/to")
+	f.String(keyProfileDatabaseName, "", "Athena database name")
+	f.String(keyProfileCatalogName, "", "data catalog name")
 
 	// global options
 	f.Bool(keyVerbose, false, "Work verbosely")
@@ -29,12 +29,12 @@ func init() {
 		key string
 		env string
 	}{
-		{key: keyWorkGroup, env: "WORK_GROUP"},
-		{key: keyOutputLocation, env: "OUTPUT_LOCATION"},
-		{key: keyDatabaseName, env: "DATABASE_NAME"},
-		{key: keyCatalogName, env: "CATALOG_NAME"},
-		{key: keyVerbose, env: "VERBOSE"},
 		{key: keyProfile, env: "PROFILE"},
+		{key: keyProfileWorkGroup, env: "WORK_GROUP"},
+		{key: keyProfileOutputLocation, env: "OUTPUT_LOCATION"},
+		{key: keyProfileDatabaseName, env: "DATABASE_NAME"},
+		{key: keyProfileCatalogName, env: "CATALOG_NAME"},
+		{key: keyVerbose, env: "VERBOSE"},
 		{key: keyTimeout, env: "TIMEOUT"},
 		{key: keyDryRun},
 	}
