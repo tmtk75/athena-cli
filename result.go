@@ -16,7 +16,7 @@ func init() {
 
 var ResultCmd = &cobra.Command{
 	Use:   `result [flags] <execution-id>`,
-	Short: "Show query reulst",
+	Short: "Show query result",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		w := NewSession()
