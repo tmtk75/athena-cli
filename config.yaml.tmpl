@@ -4,7 +4,26 @@
 #   - . (current directory)
 #
 
+#
+#
+#
 profiles:
-  default:
-    work-group: <work-group-name>  # select one of outputs of list-work-groups
+  default: &default
+    timeout: 30s
     database-name: <database-name> # select one of outputs of list-databases
+    #work-group: "primary"
+    #output-location: ""
+    #catalog-name: "AWS
+
+  dev: *default
+
+  prod:
+    timeout: 5m
+    database-name: <prod-database-name>
+
+#
+#
+#
+accounts:
+  "123456791234": *default
+  "223344556677": *prod
