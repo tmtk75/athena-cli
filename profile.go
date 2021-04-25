@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/spf13/viper"
 )
@@ -22,19 +21,34 @@ func profileViper(v *viper.Viper, aid string) *viper.Viper {
 		pkey := fmt.Sprintf("%s.%s", parent, key)
 		v := v.Sub(pkey)
 		if v == nil {
-			log.Fatalf("no found profile, %v", pkey)
+			//log.Fatalf("no found profile, %v", pkey)
+			return nil
 		}
-		logger.Printf("use a profile, %v", pkey)
+		logger.Printf("use a profile with the key, '%v'", pkey)
 		return v
 	}
 
 	// use it if given explicitly.
-	if p := v.GetString(keyProfile); p != "" {
-		return findSub("profiles", p)
+	p := v.GetString(keyProfile)
+	logger.Printf("given profile name: %v", p)
+	if p != "" {
+		v := findSub("profiles", p)
+		if v != nil {
+			return v
+		}
+		logger.Printf("profile name was given but no corresponding profile.")
 	}
 
-	// New empty viper.
-	return findSub("accounts", aid)
+	logger.Printf("no given profile name.")
+	logger.Printf("will find a profile correspoinding to your AWS account ID.")
+	av := findSub("accounts", aid)
+	if av != nil {
+		logger.Printf("found a profile correspoinding to your AWS account ID.")
+		return av
+	}
+
+	logger.Printf("no profile. returns default.")
+	return viper.GetViper()
 }
 
 type Profile struct {
