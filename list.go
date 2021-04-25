@@ -38,8 +38,9 @@ const (
 )
 
 var ListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all available executions",
+	Use:     "list-executions",
+	Aliases: []string{"list"},
+	Short:   "List all available executions",
 	Run: func(cmd *cobra.Command, args []string) {
 		w := NewSession()
 		err := w.List()

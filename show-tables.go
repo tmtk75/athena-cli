@@ -24,9 +24,10 @@ func init() {
 }
 
 var ShowTablesCmd = &cobra.Command{
-	Use:   "show-tables [table-name]",
-	Short: "Show all tables in .tsv or table metadata for given table name",
-	Args:  cobra.RangeArgs(0, 1),
+	Use:     "show-tables [table-name]",
+	Short:   "Show all tables in .tsv or table metadata for given table name",
+	Aliases: []string{"list-tables"},
+	Args:    cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := ""
 		if len(args) > 0 {
