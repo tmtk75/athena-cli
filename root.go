@@ -22,7 +22,7 @@ func init() {
 
 	// global options
 	f.Bool(keyVerbose, false, "Work verbosely")
-	f.Duration(keyTimeout, time.Second*5, "Timeout ex) 30s")
+	f.Duration(keyTimeout, time.Second*30, "Timeout ex) 30s, 1m")
 	f.Bool(keyDryRun, false, "Dry-run only printing templated query.")
 
 	opts := []struct {

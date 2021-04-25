@@ -131,3 +131,36 @@ athena-cli query "select * from cloudtrail_logs limit 1"
 ```
 athena-cli query --query.values '{"year":"2019","month":"08","day":"19"}' < query/drop-part.q
 ```
+
+# Profile
+`--profile` option is supported from v0.2.0.
+You can put your config file as `~/.config/athena-cli/config.yaml`
+so that you don't need giving work group name, database name every time you run.
+
+```
+profiles:
+  dev: &dev
+    timeout: 30s
+    database-name: elblog-dev
+  prod: &prod
+    timeout: 5m
+    database-name: elblog-prod
+```
+
+## Auto profile based on AWS account ID
+You can also associate one profile to one AWS account ID.
+
+For the below example, `dev` is used when you run with AWS account, "123456791234".
+```
+profiles:
+  dev: &dev
+    timeout: 30s
+    database-name: elblog-dev
+  prod: &prod
+    timeout: 5m
+    database-name: elblog-prod
+accounts:
+  "123456791234": *dev
+  "223344556677": *prod
+```
+
