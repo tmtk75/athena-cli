@@ -42,8 +42,8 @@ var ShowTablesCmd = &cobra.Command{
 
 func (sess *Session) ShowTables(tablename string) error {
 	var (
-		catalog = sess.v.GetString(keyCatalogName)
-		dbname  = sess.v.GetString(keyDatabaseName)
+		catalog = sess.profile.CatalogName()
+		dbname  = sess.profile.DatabaseName()
 	)
 	logger.Printf("catalog-name: %v, database-name: %v", catalog, dbname)
 	//

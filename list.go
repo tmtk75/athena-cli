@@ -51,7 +51,7 @@ var ListCmd = &cobra.Command{
 
 func (sess *Session) List() error {
 	var (
-		wg = sess.v.GetString(keyWorkGroup)
+		wg = sess.profile.WorkGroup()
 	)
 
 	r, err := sess.athenaClient.ListQueryExecutions(sess.ctx, &athena.ListQueryExecutionsInput{WorkGroup: aws.String(wg)})

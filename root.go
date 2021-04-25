@@ -13,12 +13,15 @@ func init() {
 	// Root
 	f := RootCmd.PersistentFlags()
 
-	f.String(keyWorkGroup, "primary", "Athena work group")
+	// profile options
+	f.String(keyProfile, "", "Profile name")
+	f.String(keyWorkGroup, "", "Athena work group")
 	f.String(keyOutputLocation, "", "S3 URL for output, for instance, s3://your-bucket-name/path/to")
 	f.String(keyDatabaseName, "", "Athena database name")
-	f.String(keyCatalogName, "AwsDataCatalog", "data catalog name")
+	f.String(keyCatalogName, "", "data catalog name")
+
+	// global options
 	f.Bool(keyVerbose, false, "Work verbosely")
-	f.String(keyProfile, "", "Profile name")
 	f.Duration(keyTimeout, time.Second*5, "Timeout ex) 30s")
 	f.Bool(keyDryRun, false, "Dry-run only printing templated query.")
 
@@ -67,6 +70,9 @@ const (
 	keyProfile = "profile"
 	keyTimeout = "timeout"
 	keyDryRun  = "dry-run"
+)
+
+const (
 	// each profile
 	keyWorkGroup      = "work-group"
 	keyOutputLocation = "output-location"

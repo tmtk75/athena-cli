@@ -32,7 +32,7 @@ var GetCmd = &cobra.Command{
 
 func (sess *Session) GetObject(id string, exts []string) (string, error) {
 	var (
-		loc = sess.v.GetString(keyOutputLocation)
+		loc = sess.profile.OutputLocation()
 		err error
 	)
 

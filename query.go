@@ -109,9 +109,9 @@ func templ(q string) (string, error) {
 
 func (sess *Session) Query(query string) (string, error) {
 	var (
-		wg     = sess.v.GetString(keyWorkGroup)
-		loc    = sess.v.GetString(keyOutputLocation)
-		dbname = sess.v.GetString(keyDatabaseName)
+		wg     = sess.profile.WorkGroup()
+		loc    = sess.profile.OutputLocation()
+		dbname = sess.profile.DatabaseName()
 	)
 
 	// A guard, check if work-group has quota to scan.

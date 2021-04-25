@@ -35,7 +35,7 @@ var ListDatabasesCmd = &cobra.Command{
 }
 
 func (sess *Session) ListDatabases() error {
-	name := sess.v.GetString(keyCatalogName)
+	name := sess.profile.CatalogName()
 	r, err := sess.athenaClient.ListDatabases(sess.ctx, &athena.ListDatabasesInput{CatalogName: aws.String(name)})
 	if err != nil {
 		return err
