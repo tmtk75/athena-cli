@@ -53,11 +53,16 @@ func NewSession() *Session {
 
 	v := viper.GetViper()
 	pv := profileViper(v, *r.Account)
-	return &Session{
+	sess := &Session{
 		ctx:          ctx,
 		athenaClient: athena.NewFromConfig(cfg),
 		s3Client:     s3.NewFromConfig(cfg),
 		v:            v,
 		profile:      &Profile{v: v, pv: pv},
 	}
+	logger.Printf("work-group: %s", sess.profile.WorkGroup())
+	logger.Printf("catalog-name: %s", sess.profile.CatalogName())
+	logger.Printf("database-name: %s", sess.profile.DatabaseName())
+	logger.Printf("output-location: %s", sess.profile.OutputLocation())
+	return sess
 }
