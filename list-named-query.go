@@ -27,7 +27,7 @@ var ListNamedQueriesCmd = &cobra.Command{
 }
 
 func (sess *Session) ListNamedQueries() error {
-	r, err := sess.athenaClient.ListNamedQueries(sess.ctx, &athena.ListNamedQueriesInput{})
+	r, err := sess.athenaClient.ListNamedQueries(sess.ctx, &athena.ListNamedQueriesInput{WorkGroup: aws.String(sess.profile.WorkGroup())})
 	if err != nil {
 		return err
 	}
