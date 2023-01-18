@@ -1,4 +1,6 @@
 # README
+<img src="https://github.com/tmtk75/athena-cli/actions/workflows/ci.yaml/badge.svg"/>
+
 ## What's this?
 AWS Athena command line tool helping you to casually execute your queries.
 
